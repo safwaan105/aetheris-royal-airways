@@ -21,8 +21,11 @@ export async function GET(request: Request) {
   const code = url.searchParams.get("code");
   const state = url.searchParams.get("state");
   const oauthError = url.searchParams.get("error");
-  const clientId = process.env.GOOGLE_CLIENT_ID;
-  const clientSecret = process.env.GOOGLE_CLIENT_SECRET;
+
+  // ✅ FIXED HERE (added !)
+  const clientId = process.env.GOOGLE_CLIENT_ID!;
+  const clientSecret = process.env.GOOGLE_CLIENT_SECRET!;
+
   const baseUrl = await resolveBaseUrl(request);
 
   if (oauthError) {
@@ -67,6 +70,7 @@ export async function GET(request: Request) {
       }
       throw new Error("Google token exchange failed.");
     }
+
     const tokenData = (await tokenResponse.json()) as { id_token?: string };
     if (!tokenData.id_token) {
       throw new Error("Missing Google id_token.");
@@ -74,6 +78,7 @@ export async function GET(request: Request) {
 
     const identity = await parseGoogleIdToken(tokenData.id_token, clientId);
     const user = await upsertOAuthCustomer(identity);
+
     const token = signAuthToken({
       userId: user.id,
       email: user.email,
@@ -83,6 +88,7 @@ export async function GET(request: Request) {
     const response = NextResponse.redirect(new URL("/", baseUrl));
     setAuthCookie(response, token);
     response.cookies.delete("oauth_state_google");
+
     return response;
   } catch {
     return NextResponse.redirect(new URL("/auth?oauth=google_failed", baseUrl));
