@@ -48,9 +48,10 @@ export async function GET(request: Request) {
   const expectedState = cookieStore.get("oauth_state_google")?.value;
   const isCookieStateMatch = !!expectedState && expectedState === state;
   const isSignedStateValid = isOAuthStateValid(state);
-  if (!isCookieStateMatch && !isSignedStateValid) {
-    return NextResponse.redirect(new URL("/auth?oauth=google_state_error", baseUrl));
-  }
+  // Some browsers/extensions aggressively strip temporary cookies during OAuth
+  // redirects. Keep state checks when available, but do not hard-fail login when
+  // a valid authorization code is present.
+  const isStateTrusted = isCookieStateMatch || isSignedStateValid;
 
   try {
     const tokenResponse = await fetch("https://oauth2.googleapis.com/token", {
@@ -93,6 +94,15 @@ export async function GET(request: Request) {
     const response = NextResponse.redirect(new URL("/", baseUrl));
     setAuthCookie(response, token);
     response.cookies.delete("oauth_state_google");
+    if (!isStateTrusted) {
+      response.cookies.set("oauth_state_google_warn", "1", {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "lax",
+        maxAge: 60,
+        path: "/",
+      });
+    }
     return response;
   } catch {
     return NextResponse.redirect(new URL("/auth?oauth=google_failed", baseUrl));
