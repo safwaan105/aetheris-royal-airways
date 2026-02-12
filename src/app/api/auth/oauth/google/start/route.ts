@@ -12,6 +12,10 @@ function isGoogleClientIdConfigured(value: string | undefined) {
 
 export async function GET(request: Request) {
   const clientId = process.env.GOOGLE_CLIENT_ID;
+  if (!clientId) {
+    const baseUrl = await resolveBaseUrl(request);
+    return NextResponse.redirect(new URL("/auth?oauth=google_not_configured", baseUrl));
+  }
   if (!isGoogleClientIdConfigured(clientId)) {
     const baseUrl = await resolveBaseUrl(request);
     return NextResponse.redirect(new URL("/auth?oauth=google_not_configured", baseUrl));
