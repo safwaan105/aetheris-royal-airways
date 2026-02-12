@@ -4,6 +4,7 @@ import { parseGoogleIdToken, upsertOAuthCustomer } from "@/lib/oauth";
 import { signAuthToken } from "@/lib/jwt";
 import { setAuthCookie } from "@/lib/auth-cookie";
 import { resolveBaseUrl } from "@/lib/app-url";
+import { isOAuthStateValid } from "@/lib/oauth-state";
 
 function hasPlaceholderGoogleConfig(
   clientId: string | undefined,
@@ -45,7 +46,9 @@ export async function GET(request: Request) {
 
   const cookieStore = await cookies();
   const expectedState = cookieStore.get("oauth_state_google")?.value;
-  if (!expectedState || expectedState !== state) {
+  const isCookieStateMatch = !!expectedState && expectedState === state;
+  const isSignedStateValid = isOAuthStateValid(state);
+  if (!isCookieStateMatch && !isSignedStateValid) {
     return NextResponse.redirect(new URL("/auth?oauth=google_state_error", baseUrl));
   }
 

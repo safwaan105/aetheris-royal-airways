@@ -1,6 +1,6 @@
-import crypto from "crypto";
 import { NextResponse } from "next/server";
 import { resolveBaseUrl } from "@/lib/app-url";
+import { createOAuthState } from "@/lib/oauth-state";
 
 function isGoogleClientIdConfigured(value: string | undefined) {
   if (!value) return false;
@@ -23,7 +23,7 @@ export async function GET(request: Request) {
 
   const baseUrl = await resolveBaseUrl(request);
   const redirectUri = `${baseUrl}/api/auth/oauth/google/callback`;
-  const state = crypto.randomBytes(20).toString("hex");
+  const state = createOAuthState();
 
   const authUrl = new URL("https://accounts.google.com/o/oauth2/v2/auth");
   authUrl.searchParams.set("client_id", clientId);
