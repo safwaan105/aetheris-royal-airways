@@ -1,0 +1,451 @@
+@import "tailwindcss";
+
+:root {
+  --background: #0b0f1c;
+  --foreground: #ecf4ff;
+  --primary: #4c46ff;
+  --primary-soft: rgba(76, 70, 255, 0.2);
+  --gold: #e0b45f;
+  --obsidian: #0a0e18;
+  --cyan: #34e8ff;
+  --border: #293046;
+  --card: #11192c;
+  --muted: #9db0ce;
+  --success: #2fe38a;
+  --danger: #ff5a87;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-inter);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-inter), sans-serif;
+  min-height: 100vh;
+  background-image:
+    radial-gradient(circle at 12% -8%, rgba(76, 70, 255, 0.28), transparent 35%),
+    radial-gradient(circle at 100% 5%, rgba(52, 232, 255, 0.18), transparent 38%),
+    linear-gradient(180deg, #090d17 0%, #0b0f1c 48%, #090d17 100%);
+}
+
+* {
+  border-color: var(--border);
+}
+
+a,
+button {
+  transition: all 0.15s ease;
+}
+
+.app-shell {
+  margin-inline: auto;
+  width: 100%;
+  max-width: 1240px;
+  padding-inline: 16px;
+}
+
+.grid-12 {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.card {
+  border: 1px solid var(--border);
+  background: var(--card);
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.28);
+}
+
+.card-luxury {
+  border: 1px solid rgba(224, 180, 95, 0.46);
+  background: linear-gradient(150deg, #19130b 0%, #121014 100%);
+  border-radius: 18px;
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.42);
+  color: #f8e6c2;
+}
+
+.glass-panel {
+  border: 1px solid rgba(110, 137, 193, 0.35);
+  background: linear-gradient(145deg, rgba(17, 25, 44, 0.82), rgba(15, 24, 46, 0.55));
+  border-radius: 18px;
+  backdrop-filter: blur(14px);
+  box-shadow:
+    0 20px 38px rgba(2, 4, 10, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.section-title {
+  font-size: clamp(1.4rem, 2.2vw, 2rem);
+  line-height: 1.2;
+  font-weight: 800;
+  color: #eef4ff;
+}
+
+.subtle {
+  color: var(--muted);
+}
+
+.field {
+  width: 100%;
+  border: 1px solid var(--border);
+  background: #0f172c;
+  border-radius: 12px;
+  min-height: 58px;
+  padding: 18px 14px 10px;
+  font-size: 1rem;
+  color: #e9f3ff;
+}
+
+.field::placeholder {
+  color: #7383a2;
+}
+
+.field:focus {
+  outline: none;
+  border-color: #52ddff;
+  box-shadow: 0 0 0 3px rgba(82, 221, 255, 0.18);
+}
+
+.float-wrap {
+  position: relative;
+}
+
+.float-label {
+  position: absolute;
+  left: 14px;
+  top: 8px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: #8ca0c3;
+}
+
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 52px;
+  border-radius: 12px;
+  background: linear-gradient(120deg, #4c46ff, #2a86ff);
+  color: #fff;
+  padding-inline: 20px;
+  font-weight: 800;
+  box-shadow: 0 8px 18px rgba(57, 83, 255, 0.45);
+}
+
+.btn-primary:hover {
+  filter: brightness(1.05);
+}
+
+.btn-shimmer {
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-shimmer::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(110deg, transparent 30%, rgba(255, 255, 255, 0.35) 50%, transparent 70%);
+  transform: translateX(-120%);
+  transition: transform 0.5s ease;
+}
+
+.btn-shimmer:hover::after {
+  transform: translateX(120%);
+}
+
+.btn-luxury {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 52px;
+  border-radius: 12px;
+  background: linear-gradient(120deg, #c2952e, #e5bd63);
+  color: #20170a;
+  padding-inline: 20px;
+  font-weight: 800;
+}
+
+.btn-luxury:hover {
+  filter: brightness(0.97);
+}
+
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  border-radius: 12px;
+  background: #121a2d;
+  border: 1px solid var(--border);
+  color: #d9e6ff;
+  padding-inline: 16px;
+  font-weight: 700;
+}
+
+.btn-secondary:hover {
+  background: #1a2440;
+}
+
+.chip {
+  border-radius: 999px;
+  border: 1px solid rgba(82, 221, 255, 0.32);
+  background: rgba(82, 221, 255, 0.13);
+  color: #74efff;
+  padding: 5px 10px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.chip-luxury {
+  border-radius: 999px;
+  border: 1px solid rgba(224, 180, 95, 0.52);
+  background: rgba(224, 180, 95, 0.18);
+  color: #f4cf89;
+  padding: 5px 10px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.status-ok {
+  color: var(--success);
+}
+
+.status-err {
+  color: var(--danger);
+}
+
+.table-wrap {
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  min-width: 680px;
+  border-collapse: collapse;
+}
+
+.table th,
+.table td {
+  border-bottom: 1px solid var(--border);
+  padding: 12px;
+  text-align: left;
+  font-size: 0.95rem;
+}
+
+.table th {
+  color: #d5e5ff;
+  font-weight: 800;
+  background: #121a2d;
+}
+
+.intro-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 120;
+  display: grid;
+  place-items: center;
+  background: rgba(5, 8, 14, 0.96);
+  animation: introFade 2s ease forwards;
+}
+
+.intro-panel {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 18px;
+  border: 1px solid rgba(98, 122, 173, 0.4);
+  background: linear-gradient(140deg, rgba(20, 28, 48, 0.94), rgba(13, 20, 38, 0.9));
+  box-shadow:
+    0 0 0 1px rgba(76, 70, 255, 0.25),
+    0 0 36px rgba(52, 232, 255, 0.2);
+  padding: 22px 28px;
+  animation:
+    pulseGlow 1.05s ease-in-out infinite alternate,
+    logoDock 1.8s cubic-bezier(0.22, 0.84, 0.24, 1) forwards;
+}
+
+.nav-item {
+  min-width: 72px;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  border-radius: 12px;
+  padding: 8px 10px;
+}
+
+.nav-item svg {
+  width: 18px;
+  height: 18px;
+}
+
+.nav-item span {
+  font-size: 11px;
+  line-height: 1;
+  font-weight: 700;
+}
+
+.skeleton {
+  position: relative;
+  overflow: hidden;
+  border-radius: 12px;
+  background: #1a2540;
+}
+
+.skeleton::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.22), transparent);
+  animation: shimmer 1.3s infinite;
+}
+
+.card-scroll-glow {
+  transition: box-shadow 0.25s ease, transform 0.25s ease;
+}
+
+.card-scroll-glow.in-view {
+  box-shadow:
+    0 0 0 1px rgba(82, 221, 255, 0.3),
+    0 18px 36px rgba(7, 12, 24, 0.55);
+  transform: translateY(-2px);
+}
+
+.plane-processing {
+  position: relative;
+  overflow: hidden;
+  min-height: 84px;
+  border-radius: 12px;
+  border: 1px solid #2c3450;
+  background: #11182d;
+}
+
+.plane-processing::before {
+  content: ">";
+  position: absolute;
+  left: -32px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 24px;
+  color: #52ddff;
+  animation: flyAcross 1.8s linear infinite;
+}
+
+.fade-in {
+  animation: contentFade 0.32s ease both;
+}
+
+@keyframes introFade {
+  0% { opacity: 0; }
+  10% { opacity: 1; }
+  80% { opacity: 1; }
+  100% {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
+@keyframes pulseGlow {
+  from {
+    box-shadow:
+      0 0 0 1px rgba(76, 70, 255, 0.25),
+      0 0 18px rgba(52, 232, 255, 0.12);
+  }
+  to {
+    box-shadow:
+      0 0 0 1px rgba(76, 70, 255, 0.45),
+      0 0 36px rgba(52, 232, 255, 0.26);
+  }
+}
+
+@keyframes logoDock {
+  0% {
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%) scale(1.08);
+    opacity: 1;
+  }
+  72% {
+    left: 68px;
+    top: 44px;
+    transform: translate(0, 0) scale(0.52);
+    opacity: 1;
+  }
+  100% {
+    left: 68px;
+    top: 44px;
+    transform: translate(0, 0) scale(0.52);
+    opacity: 0;
+  }
+}
+
+@keyframes flyAcross {
+  to {
+    left: calc(100% + 20px);
+  }
+}
+
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes contentFade {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 768px) {
+  .app-shell {
+    padding-inline: 12px;
+  }
+
+  .field {
+    min-height: 52px;
+    font-size: 0.98rem;
+  }
+
+  .btn-primary,
+  .btn-secondary,
+  .btn-luxury {
+    width: 100%;
+  }
+
+  @keyframes logoDock {
+    0% {
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%) scale(1.06);
+      opacity: 1;
+    }
+    72% {
+      left: 24px;
+      top: 34px;
+      transform: translate(0, 0) scale(0.46);
+      opacity: 1;
+    }
+    100% {
+      left: 24px;
+      top: 34px;
+      transform: translate(0, 0) scale(0.46);
+      opacity: 0;
+    }
+  }
+}

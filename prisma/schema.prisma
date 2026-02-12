@@ -1,0 +1,201 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id               String            @id @default(cuid())
+  name             String
+  email            String            @unique
+  passwordHash     String
+  role             String            @default("customer")
+  bookings         Booking[]
+  payments         Payment[]
+  favorites        Favorite[]
+  searchHistory    SearchHistory[]
+  supportRequests  SupportRequest[]
+  otpChallenges    OtpChallenge[]
+  pendingCheckouts PendingCheckout[]
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+}
+
+model Flight {
+  id             String          @id @default(cuid())
+  flightNumber   String          @unique
+  airline        String
+  airlineImageUrl String
+  routeFrom      String
+  routeTo        String
+  departureAt    DateTime
+  arrivalAt      DateTime
+  basePrice      Int
+  vesselType     String
+  amenities      Json
+  capacity       Int
+  seats          SeatInventory[]
+  bookings       Booking[]
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+}
+
+model SeatInventory {
+  id        String   @id @default(cuid())
+  flightId  String
+  seatId    String
+  seatClass String
+  status    String   @default("available")
+  bookingId String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  flight  Flight   @relation(fields: [flightId], references: [id], onDelete: Cascade)
+  booking Booking? @relation(fields: [bookingId], references: [id], onDelete: SetNull)
+
+  @@unique([flightId, seatId])
+  @@index([flightId, status])
+}
+
+model Booking {
+  id               String            @id @default(cuid())
+  pnr              String            @unique
+  flightId         String?
+  flightSnapshot   Json
+  userId           String
+  seats            Json
+  totalPrice       Int
+  travelClass      String
+  status           String            @default("confirmed")
+  paymentStatus    String            @default("paid")
+  paymentProvider  String            @default("simulated")
+  paymentReference String?
+  kycStatus        String            @default("pending")
+  kycReference     String?
+  passenger        Json
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+
+  user            User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  flight          Flight?           @relation(fields: [flightId], references: [id], onDelete: SetNull)
+  seatInventories SeatInventory[]
+  pendingLinks    PendingCheckout[]
+  payments        Payment[]
+
+  @@index([userId, createdAt])
+}
+
+model PendingCheckout {
+  id               String   @id @default(cuid())
+  userId           String
+  flightId         String
+  flightSnapshot   Json?
+  travelClass      String
+  seats            Json
+  passenger        Json
+  quotedTotal      Int
+  currency         String   @default("usd")
+  paymentMethod    String?
+  provider         String
+  paymentSessionId String?  @unique
+  paymentStatus    String   @default("pending")
+  kycStatus        String
+  kycReference     String?
+  bookingId        String?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  booking Booking? @relation(fields: [bookingId], references: [id], onDelete: SetNull)
+
+  @@index([userId, createdAt])
+  @@index([flightId])
+}
+
+model Payment {
+  id               String           @id @default(cuid())
+  userId           String
+  bookingId        String?
+  pendingCheckoutId String?
+  amount           Int
+  currency         String           @default("usd")
+  method           String
+  provider         String
+  status           String           @default("pending")
+  reference        String?
+  metadata         Json?
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
+
+  user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  booking Booking? @relation(fields: [bookingId], references: [id], onDelete: SetNull)
+
+  @@index([userId, createdAt])
+  @@index([bookingId])
+  @@index([pendingCheckoutId])
+}
+
+model Favorite {
+  id             String   @id @default(cuid())
+  userId         String
+  flightId       String?
+  flightSnapshot Json
+  createdAt      DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt])
+  @@unique([userId, flightId], map: "favorite_user_flight_unique")
+}
+
+model SearchHistory {
+  id            String   @id @default(cuid())
+  userId        String
+  fromCode      String
+  toCode        String
+  departureDate String
+  passengers    Int
+  travelClass   String
+  tier          String
+  createdAt     DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt])
+}
+
+model SupportRequest {
+  id        String   @id @default(cuid())
+  userId    String
+  subject   String
+  message   String
+  status    String   @default("open")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt])
+  @@index([status])
+}
+
+model OtpChallenge {
+  id         String    @id @default(cuid())
+  userId     String
+  purpose    String
+  codeHash   String
+  email      String
+  expiresAt  DateTime
+  attempts   Int       @default(0)
+  verifiedAt DateTime?
+  createdAt  DateTime  @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt])
+  @@index([email, createdAt])
+  @@index([expiresAt])
+}

@@ -1,0 +1,16 @@
+export const AIRPORT_OPTIONS = [
+  { code: "DEL", city: "Delhi" },
+  { code: "BOM", city: "Mumbai" },
+  { code: "BLR", city: "Bengaluru" },
+  { code: "HYD", city: "Hyderabad" },
+  { code: "MAA", city: "Chennai" },
+  { code: "CCU", city: "Kolkata" },
+  { code: "GOI", city: "Goa" },
+  { code: "DXB", city: "Dubai" },
+  { code: "SIN", city: "Singapore" },
+  { code: "LHR", city: "London" },
+  { code: "JFK", city: "New York" },
+  { code: "CDG", city: "Paris" },
+  { code: "NRT", city: "Tokyo" },
+  { code: "SYD", city: "Sydney" },
+];
